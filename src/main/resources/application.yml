@@ -1,8 +1,10 @@
+server:
+  port: 8082
 spring:
   application:
     name: pix-consumer
   kafka:
-    bootstrap-servers: localhost:8092
+    bootstrap-servers: localhost:9092
   jpa:
     properties:
       hibernate:

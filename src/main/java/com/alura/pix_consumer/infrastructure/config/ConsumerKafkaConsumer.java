@@ -1,16 +1,15 @@
 package com.alura.pix_consumer.infrastructure.config;
 
 import com.alura.pix_consumer.entrypoints.dto.PixDto;
-import com.fasterxml.jackson.databind.JsonSerializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.StringSerializer;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import java.util.HashMap;
@@ -19,7 +18,7 @@ import java.util.Map;
 @Configuration
 public class ConsumerKafkaConsumer {
 
-    @Value(value = "${spring.kafka.bootstrap-servers:localhost:8092}")
+    @Value(value = "${spring.kafka.bootstrap-servers:localhost:9092}")
     private String bootstrapAddress;
 
     @Bean
@@ -32,12 +31,12 @@ public class ConsumerKafkaConsumer {
         );
         configProps.put(
                 ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
-                StringSerializer.class
+                StringDeserializer.class
         );
 
         configProps.put(
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-                JsonSerializer.class
+                JsonDeserializer.class
         );
 
         configProps.put(
@@ -45,6 +44,7 @@ public class ConsumerKafkaConsumer {
                 "*"
         );
 
+        configProps.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
         return new DefaultKafkaConsumerFactory<>(configProps);
     }
 
